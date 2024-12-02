@@ -20,7 +20,7 @@ from dem_util import *
 # 3. VTB-PR decoder,
 # 4. VTB-FR decoder,
 # 5. FR decoder.
-# The first four are used in this work. 
+# No. 1,3,4 decoders are used in this work. 
 
 # Decoding is run in parrallel using the joblib package
 # The number of processes is set to be 5 by default, and 
@@ -28,7 +28,6 @@ from dem_util import *
 # via the num_batch parameter in each decoding method. 
 
 # with current setup, it would also be straight forward 
-# to implement an FR decoder (without the VTB procedure) or 
 # to implement a BP-assisted decoder. 
 
 
@@ -293,7 +292,7 @@ class Decomposer():
                         self.unattached_z_decom_dict[fault_id]=[fault_id_min,hpe_id_diff]
 
 
-    def decoding_batch_plain(self, num_shots: int, num_batch=10) -> None:
+    def decoding_batch_plain(self, num_shots: int, num_batch=5) -> None:
 
         detection_events_full, observable_flips_full = self.sampler\
                                     .sample(num_shots, separate_observables=True)
@@ -507,7 +506,7 @@ class Decomposer():
         return (tot_err_shot/num_shots, tot_err_shot, num_shots)
     
 
-    def decoding_batch_FR(self, num_shots: int, num_batch = 10):
+    def decoding_batch_FR(self, num_shots: int, num_batch = 5):
 
         detection_events_full, observable_flips_full = self.sampler\
                                     .sample(num_shots, separate_observables=True)
@@ -687,7 +686,7 @@ class Decomposer():
 
 
 
-    def z_matcher_compilation_full_defect(self) -> None:
+    def z_matcher_compilation_VTB(self) -> None:
         '''
         Construction of the Gz decoding graph for 
         the VTB-assisted decoders
@@ -803,7 +802,6 @@ class Decomposer():
                 col_list.append(col)
             
             if top_bd == True:
-                print(len(z_det_ids))
                 row = num_rows-2
                 data_list.append(1)
                 row_list.append(row)
@@ -1029,7 +1027,7 @@ class Decomposer():
     
 
 
-    def _updata_matchers(self, dem: DEM, stim_circuit: stim.Circuit):
+    def _update_matchers(self, dem: DEM, stim_circuit: stim.Circuit):
         fault_id_list = sorted(list(self.hypergraph.id_hyperedge_dict.keys()))
         fault_z_id_list = []
         
